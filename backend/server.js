@@ -75,8 +75,20 @@ const Batch  = mongoose.model('Batch', batchSchema);
 const Farmer = mongoose.model('Farmer', farmerSchema);
 
 // ---------------------------------------------------------------------------
-// API Routes — Health
+// API Routes — Root & Health
 // ---------------------------------------------------------------------------
+app.get('/', (req, res) => {
+  res.json({
+    status: 'ok',
+    message: 'AyurChain Backend API is live!',
+    endpoints: {
+      health: '/api/health',
+      batches: '/api/batches',
+      farmers: '/api/farmers'
+    }
+  });
+});
+
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
