@@ -10,9 +10,6 @@ MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/ayurchain?
 # CORS — allowed frontend origins
 CORS_ORIGIN=https://ayur-chain-three.vercel.app
 
-# JWT Secret for Authentication
-JWT_SECRET=ayurchain_jwt_secure_key_2024_sih_ayush
-
 # IPFS / Pinata
 # PINATA_API_KEY=
 # PINATA_SECRET_KEY=

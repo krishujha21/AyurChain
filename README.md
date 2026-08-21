@@ -30,6 +30,7 @@
 - **🗺 Interactive Geo-Mapping**: Integrated geographical mapping to view exact harvesting regions across India and forest collection zones.
 - **📱 Consumer QR Code Verification**: Instantly scan product QR codes to view full lineage, lab test results, carbon footprint metrics, and authentic harvest history.
 - **🛡 Regulatory & Admin Dashboard**: Dedicated portals for quality control inspectors, lab verifiers, state forest departments, and AYUSH compliance regulators.
+- **🔐 Secure Role-Based Authentication**: JWT & bcrypt powered authentication supporting Email/Password and instant Web3 MetaMask single-sign-on with 1-click evaluation demo accounts.
 - **🦊 Multi-Wallet Support**: Seamless Web3 wallet connectivity via MetaMask, WalletConnect, and Coinbase Wallet.
 - **⚡ Dual Environment & Smart Failover**: Production-ready architecture with seamless failover between primary/secondary backends and offline demo fallback (`mockData`).
 
