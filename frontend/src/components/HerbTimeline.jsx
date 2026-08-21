@@ -74,7 +74,7 @@ export const HerbTimeline = ({ batch }) => {
                 <div className={`mt-3 pt-3 border-t border-borderDark/50 flex flex-wrap items-center gap-3 text-xs ${isEven ? 'md:justify-end' : 'justify-start'}`}>
                   {stage.txHash && (
                     <a
-                      href={`https://sepolia.etherscan.io/tx/${stage.txHash}`}
+                      href={`https://etherscan.io/tx/${stage.txHash}`}
                       target="_blank"
                       rel="noreferrer"
                       className="flex items-center gap-1 text-verifiedBlue hover:underline font-mono text-[11px]"

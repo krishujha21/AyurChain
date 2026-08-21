@@ -72,7 +72,7 @@ export const AppProvider = ({ children }) => {
     setOfflineQueue([]);
     localStorage.setItem('ayurchain_batches', JSON.stringify(updatedBatches));
     localStorage.removeItem('ayurchain_offline_queue');
-    showToast('Synced with Blockchain!', `${offlineQueue.length} offline batch(es) written to Sepolia testnet.`, 'success');
+    showToast('Synced with Blockchain!', `${offlineQueue.length} offline batch(es) written to Ethereum blockchain.`, 'success');
   };
 
   const addFarmerRegistration = (farmerData) => {

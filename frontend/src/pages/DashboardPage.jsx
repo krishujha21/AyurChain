@@ -184,7 +184,7 @@ export const DashboardPage = () => {
               {role} Portal Overview
             </h1>
             <p className="text-xs text-textMuted mt-1">
-              Logged in view. Immutable ledger synced with Sepolia node.
+              Logged in view. Immutable ledger synced with Ethereum node.
             </p>
           </div>
 

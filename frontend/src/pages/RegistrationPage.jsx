@@ -55,7 +55,7 @@ export const RegistrationPage = () => {
         <div className="text-center space-y-2">
           <span className="text-xs uppercase font-bold text-primaryGreen tracking-widest">Farmer & Wild Collector Portal</span>
           <h1 className="text-3xl font-bold font-display text-textPrimary">5-Step Herbalist Onboarding</h1>
-          <p className="text-xs text-textMuted max-w-md mx-auto">Register your harvest zones on Ethereum Sepolia for AYUSH authenticity certification.</p>
+          <p className="text-xs text-textMuted max-w-md mx-auto">Register your harvest zones on Ethereum for AYUSH authenticity certification.</p>
         </div>
 
         {/* Step Indicator Bar */}

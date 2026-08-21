@@ -22,13 +22,13 @@ export const TransactionToast = () => {
 
           {txToast.txHash && (
             <a
-              href={`https://sepolia.etherscan.io/tx/${txToast.txHash}`}
+              href={`https://etherscan.io/tx/${txToast.txHash}`}
               target="_blank"
               rel="noreferrer"
               className="mt-2 inline-flex items-center gap-1 text-[11px] font-mono text-verifiedBlue hover:underline"
             >
               <ExternalLink size={12} />
-              View Tx on Sepolia Etherscan
+              View Tx on Etherscan
             </a>
           )}
         </div>

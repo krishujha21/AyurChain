@@ -132,7 +132,7 @@ export const LandingPage = () => {
           <div className="w-px h-6 bg-borderDark hidden sm:block"></div>
           <div className="flex items-center gap-2">
             <CheckCircle2 className="text-verifiedBlue" size={24} />
-            <span className="text-xs font-bold text-textPrimary uppercase tracking-wider">Ethereum Sepolia Ledger</span>
+            <span className="text-xs font-bold text-textPrimary uppercase tracking-wider">Ethereum Mainnet Ledger</span>
           </div>
         </div>
       </section>

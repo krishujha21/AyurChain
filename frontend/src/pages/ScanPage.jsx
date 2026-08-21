@@ -89,7 +89,7 @@ export const ScanPage = () => {
         }`}>
           <div className="flex items-center gap-2 text-xs font-bold font-mono">
             {isOnline ? <Wifi size={16} /> : <WifiOff size={16} />}
-            <span>{isOnline ? 'ONLINE: Direct Sepolia Contract Broadcast' : 'OFFLINE MODE: Local Cache Active'}</span>
+            <span>{isOnline ? 'ONLINE: Direct Ethereum Contract Broadcast' : 'OFFLINE MODE: Local Cache Active'}</span>
           </div>
 
           {!isOnline && (
@@ -186,7 +186,7 @@ export const ScanPage = () => {
               className="w-full bg-gradient-to-r from-primaryGreen to-emerald-600 hover:opacity-90 text-bgDeep font-bold text-sm py-3.5 rounded-xl shadow-xl transition-all flex items-center justify-center gap-2"
             >
               <ShieldCheck size={18} />
-              <span>{isOnline ? 'Broadcast Batch to Sepolia Smart Contract' : 'Store Batch Local Queue (Sync Later)'}</span>
+              <span>{isOnline ? 'Broadcast Batch to Ethereum Smart Contract' : 'Store Batch Local Queue (Sync Later)'}</span>
             </button>
           </form>
 

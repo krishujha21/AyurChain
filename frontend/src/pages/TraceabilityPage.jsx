@@ -24,7 +24,7 @@ export const TraceabilityPage = () => {
 
           <span className="flex items-center gap-1 text-xs font-mono text-verifiedBlue bg-verifiedBlue/10 border border-verifiedBlue/30 px-3 py-1 rounded-full">
             <ShieldCheck size={14} />
-            Sepolia Testnet Contract Verified
+            Ethereum Contract Verified
           </span>
         </div>
 
@@ -105,7 +105,7 @@ export const TraceabilityPage = () => {
         <div className="bg-surface border border-borderDark rounded-2xl p-6 text-center space-y-2">
           <div className="flex items-center justify-center gap-2 text-xs font-mono text-verifiedBlue">
             <ShieldCheck size={18} />
-            <span>Verified on Ethereum Sepolia Testnet — Smart Contract #0x92A...8F10</span>
+            <span>Verified on Ethereum Mainnet — Smart Contract #0x92A...8F10</span>
           </div>
           <p className="text-[11px] text-textMuted max-w-xl mx-auto">
             AyurChain leverages cryptographic hashing and distributed consensus to ensure that every gram of herb is zero-adulteration and ethically harvested.

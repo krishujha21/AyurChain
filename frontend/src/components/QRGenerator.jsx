@@ -39,7 +39,7 @@ export const QRGenerator = ({ batch }) => {
           <div className="mt-3 font-mono text-[10px] bg-slate-100 px-2 py-1 rounded border border-slate-300 w-full text-slate-700">
             Batch: {batch.batchId}
           </div>
-          <p className="text-[9px] text-slate-500 mt-1 font-mono">Scan QR for Sepolia Blockchain Certificate</p>
+          <p className="text-[9px] text-slate-500 mt-1 font-mono">Scan QR for Blockchain Authenticity Certificate</p>
         </div>
 
         {/* Action Controls */}
@@ -54,7 +54,7 @@ export const QRGenerator = ({ batch }) => {
 
           <div className="bg-bgDeep p-3 rounded-lg border border-borderDark font-mono text-xs text-textMuted flex items-center justify-between">
             <span className="truncate max-w-[220px]">{traceUrl}</span>
-            <span className="text-[10px] text-verifiedBlue bg-verifiedBlue/10 px-2 py-0.5 rounded">Sepolia Testnet</span>
+            <span className="text-[10px] text-verifiedBlue bg-verifiedBlue/10 px-2 py-0.5 rounded">Ethereum Verified</span>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 pt-2">
