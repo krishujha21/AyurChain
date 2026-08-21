@@ -12,9 +12,9 @@
    - Do NOT replace real components or features with placeholder text like `// TODO: Implement later` or `/* rest of code unchanged */`.
    - Do NOT delete mock fallback data (`mockData.js`). The app must work 100% offline or when backend is down.
 
-2. **NEVER HARDCODE BACKEND URLS**:
+2. **NEVER HARDCODE BACKEND URLS DIRECTLY**:
    - **WRONG**: `fetch('http://localhost:5000/api/batches')` or `fetch('https://ayurchain-5nx5.onrender.com/api/batches')`
-   - **RIGHT**: Import `API_BASE_URL` from `@/config/api.js` (or `../config/api.js`) and fetch using `${API_BASE_URL}/api/batches`.
+   - **RIGHT**: Import `API_BASE_URL` or `smartApiFetch` from `@/config/api.js`.
 
 3. **NEVER BREAK THE TAILWIND & AYURVEDIC THEME**:
    - Do NOT introduce raw CSS files or plain basic Tailwind colors like `bg-blue-500` or `bg-white` for primary layouts.
@@ -29,28 +29,40 @@
 
 ---
 
-## 🎨 2. CODEWRITING INSTRUCTIONS (How AI Agents MUST Write Code)
+## 🔄 2. DUAL ENVIRONMENT & FAILOVER RETRY STRATEGY (Localhost <-> Production)
+
+All frontend components fetching data from the backend **MUST** follow the **Dual Environment + Failover Retry Pattern**:
+
+1. **Primary Check**: If running on `localhost`/`127.0.0.1`, attempt `http://localhost:5000`. If running on production (Vercel), attempt Render URL (`https://ayurchain-5nx5.onrender.com`).
+2. **Failover Check**: If the primary backend fails or is offline, automatically retry using the secondary URL (Production -> Local, or Local -> Production).
+3. **Offline Fallback**: If BOTH backends fail, fallback gracefully to `localStorage` or `data/mockData.js`.
+
+### 💻 Standard Code Pattern for AI Agents:
+```javascript
+import API_BASE_URL, { smartApiFetch } from '../config/api';
+import { DEMO_BATCHES } from '../data/mockData';
+
+async function fetchBatches() {
+  // Method 1: Using smartApiFetch (Auto tries Primary -> Failover)
+  const result = await smartApiFetch('/api/batches');
+  if (result.success) {
+    return result.data;
+  }
+  
+  // Method 2: Offline Fallback if both primary & failover backends are down
+  console.warn("Both backends offline. Falling back to mockData/localStorage");
+  const saved = localStorage.getItem('ayurchain_batches');
+  return saved ? JSON.parse(saved) : DEMO_BATCHES;
+}
+```
+
+---
+
+## 🎨 3. CODEWRITING INSTRUCTIONS (How AI Agents MUST Write Code)
 
 ### A. Frontend (React 18 + Vite + Tailwind)
 - **Component Pattern**: Use functional components with clean hooks. Always handle loading and error states gracefully.
 - **State & Context**: Global state lives in `src/context/AppContext.jsx`. When adding new global state, expose clean action methods.
-- **API Fetching Pattern**:
-  ```javascript
-  import API_BASE_URL from '../config/api';
-
-  async function fetchBatches() {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/batches`);
-      const json = await res.json();
-      if (json.success) return json.data;
-      throw new Error(json.error);
-    } catch (err) {
-      console.warn("Backend unavailable, using fallback:", err.message);
-      // Fallback gracefully to localStorage or mockData!
-      return getFallbackBatches();
-    }
-  }
-  ```
 
 ### B. Backend (Node.js + Express + Mongoose)
 - **Modular Route Structure**: Add routes inside `server.js` (or future `routes/` directory).
@@ -59,7 +71,7 @@
 
 ---
 
-## 📁 3. Directory Structure Quick Reference
+## 📁 4. Directory Structure Quick Reference
 
 ```text
 sihp1/
@@ -70,7 +82,7 @@ sihp1/
 │   └── package.json
 └── frontend/
     ├── src/
-    │   ├── config/api.js      <-- Centralized Localhost/Prod Backend URL Switcher
+    │   ├── config/api.js      <-- Centralized API & Failover Utility
     │   ├── context/AppContext.jsx <-- Global React App State
     │   ├── components/        <-- UI Components (Navbar, Cards, Scanners, etc.)
     │   ├── pages/             <-- Primary App Views (Landing, Dashboard, Trace, etc.)
@@ -80,7 +92,7 @@ sihp1/
 
 ---
 
-## 🚀 4. How to Run Locally
+## 🚀 5. How to Run Locally
 
 ### Frontend (`./frontend`):
 ```bash
@@ -98,5 +110,5 @@ npm run dev # or npm start
 
 ---
 
-## 💡 5. Summary Rule for AI Agents
-**"Build for production, protect offline fallback, write self-documenting clean code, and never strip existing UI aesthetics."**
+## 💡 6. Summary Rule for AI Agents
+**"Primary -> Failover Retry -> Offline Fallback. Build for production, protect offline fallback, write self-documenting clean code, and never strip existing UI aesthetics."**
