@@ -3,6 +3,7 @@
 # No PR can be merged without explicit approval from @krishujha21.
 
 * @krishujha21
-frontend/ @krishujha21
-backend/ @krishujha21
-docs/ @krishujha21
+/frontend/ @krishujha21
+/backend/ @krishujha21
+/docs/ @krishujha21
+/.github/ @krishujha21
