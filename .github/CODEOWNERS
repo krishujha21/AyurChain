@@ -1,0 +1,8 @@
+# AyurChain — CODEOWNERS
+# krishujha21 is the sole owner and required reviewer on ALL pull requests.
+# No PR can be merged without explicit approval from @krishujha21.
+
+* @krishujha21
+frontend/ @krishujha21
+backend/ @krishujha21
+docs/ @krishujha21
