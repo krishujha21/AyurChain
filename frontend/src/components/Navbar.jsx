@@ -11,11 +11,8 @@ import {
   User, 
   Menu, 
   X, 
-  LayoutDashboard, 
-  Search, 
-  FileCheck, 
-  PlusCircle, 
-  Lock 
+  Lock,
+  Sparkles
 } from 'lucide-react';
 
 export const Navbar = () => {
@@ -23,13 +20,15 @@ export const Navbar = () => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Dynamic Navigation Links: Public preview links always visible,
+  // Role tags clearly indicated when unauthenticated
   const navLinks = [
-    { path: '/', label: t('navHome') },
-    { path: '/dashboard', label: t('navDashboard') },
-    { path: '/trace/BATCH-2024-001', label: t('navTrace') },
-    { path: '/register', label: t('navRegister') },
-    { path: '/scan', label: t('navScan') },
-    { path: '/admin', label: t('navAdmin') },
+    { path: '/', label: t('navHome'), previewOnly: false },
+    { path: '/trace/BATCH-2024-001', label: t('navTrace'), previewOnly: false },
+    { path: '/dashboard', label: t('navDashboard'), isProtected: true },
+    { path: '/scan', label: t('navScan'), isProtected: true },
+    { path: '/register', label: t('navRegister'), isProtected: true },
+    { path: '/admin', label: t('navAdmin'), isProtected: true },
   ];
 
   return (
@@ -58,13 +57,19 @@ export const Navbar = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all flex items-center gap-1.5 ${
                   isActive
                     ? 'bg-primaryGreen/15 text-primaryGreen font-semibold border border-primaryGreen/30'
                     : 'text-textMuted hover:text-textPrimary hover:bg-borderDark/30'
                 }`}
               >
-                {link.label}
+                <span>{link.label}</span>
+                {!isAuthenticated && link.isProtected && (
+                  <span className="text-[9px] font-mono text-accentGold bg-accentGold/10 px-1 py-0.2 rounded border border-accentGold/20 flex items-center gap-0.5">
+                    <Lock size={9} />
+                    <span>Preview</span>
+                  </span>
+                )}
               </Link>
             );
           })}
@@ -93,7 +98,7 @@ export const Navbar = () => {
 
           {/* User Auth Pill / Login Link */}
           {isAuthenticated && user ? (
-            <div className="flex items-center gap-1.5 bg-bgDeep border border-borderDark px-2.5 py-1.5 rounded-xl">
+            <div className="flex items-center gap-1.5 bg-bgDeep border border-primaryGreen/40 px-2.5 py-1.5 rounded-xl shadow-sm">
               <div className="w-5 h-5 rounded-full bg-primaryGreen/20 text-primaryGreen flex items-center justify-center text-[10px] font-bold">
                 {user.name?.charAt(0) || 'U'}
               </div>
@@ -112,7 +117,7 @@ export const Navbar = () => {
           ) : (
             <Link
               to="/login"
-              className="flex items-center gap-1.5 bg-surface hover:bg-bgDeep border border-borderDark hover:border-primaryGreen text-xs font-semibold px-3 py-1.5 rounded-xl text-primaryGreen transition-all shadow-sm"
+              className="flex items-center gap-1.5 bg-gradient-to-r from-primaryGreen to-emerald-600 hover:opacity-95 text-bgDeep font-bold text-xs px-3.5 py-2 rounded-xl transition-all shadow-md shadow-primaryGreen/15 hover:scale-105"
             >
               <LogIn size={14} />
               <span>{t('navLogin')}</span>
@@ -150,28 +155,41 @@ export const Navbar = () => {
                   key={link.path}
                   to={link.path}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`px-3 py-2 text-xs font-medium rounded-xl text-center transition-all ${
+                  className={`px-3 py-2 text-xs font-medium rounded-xl text-center transition-all flex flex-col items-center justify-center gap-0.5 ${
                     isActive
                       ? 'bg-primaryGreen/15 text-primaryGreen font-semibold border border-primaryGreen/30'
                       : 'bg-bgDeep/50 text-textMuted hover:text-textPrimary hover:bg-surface border border-borderDark/40'
                   }`}
                 >
-                  {link.label}
+                  <span>{link.label}</span>
+                  {!isAuthenticated && link.isProtected && (
+                    <span className="text-[8px] font-mono text-accentGold flex items-center gap-0.5">
+                      <Lock size={8} /> Preview
+                    </span>
+                  )}
                 </Link>
               );
             })}
           </div>
 
           {/* Mobile Auth Button */}
-          {!isAuthenticated && (
+          {!isAuthenticated ? (
             <Link
               to="/login"
               onClick={() => setMobileMenuOpen(false)}
               className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-primaryGreen to-emerald-600 text-bgDeep font-bold text-xs py-2.5 rounded-xl shadow-md"
             >
               <LogIn size={15} />
-              <span>Sign In / Create Account</span>
+              <span>Sign In for Full Features</span>
             </Link>
+          ) : (
+            <button
+              onClick={() => { logout(); setMobileMenuOpen(false); }}
+              className="w-full flex items-center justify-center gap-2 bg-surface border border-borderDark hover:border-errorRed text-errorRed font-bold text-xs py-2.5 rounded-xl transition-colors"
+            >
+              <LogOut size={15} />
+              <span>Sign Out ({user?.name})</span>
+            </button>
           )}
         </div>
       )}

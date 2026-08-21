@@ -3,11 +3,12 @@ import { useApp } from '../context/AppContext';
 import { HerbAutocomplete } from '../components/HerbAutocomplete';
 import { IPFSUploader } from '../components/IPFSUploader';
 import { GeoMap } from '../components/GeoMap';
-import { useNavigate } from 'react-router-dom';
-import { CheckCircle2, User, MapPin, Leaf, FileText, Wallet, ArrowRight, ArrowLeft } from 'lucide-react';
+import { FeatureLockBanner } from '../components/FeatureLockBanner';
+import { useNavigate, Link } from 'react-router-dom';
+import { CheckCircle2, User, MapPin, Leaf, FileText, Wallet, ArrowRight, ArrowLeft, Lock } from 'lucide-react';
 
 export const RegistrationPage = () => {
-  const { addFarmerRegistration, account, connectWallet } = useApp();
+  const { addFarmerRegistration, account, connectWallet, isAuthenticated } = useApp();
   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
@@ -57,6 +58,15 @@ export const RegistrationPage = () => {
           <h1 className="text-3xl font-bold font-display text-textPrimary">5-Step Herbalist Onboarding</h1>
           <p className="text-xs text-textMuted max-w-md mx-auto">Register your harvest zones on Ethereum for AYUSH authenticity certification.</p>
         </div>
+
+        {/* Feature Lock Banner if unauthenticated */}
+        {!isAuthenticated && (
+          <FeatureLockBanner
+            title="Herbalist Onboarding Wizard (Preview Mode)"
+            description="You are currently previewing the 5-step registration process. Sign in to your account or connect your wallet to officially submit your botanical harvest credentials for regulatory approval."
+            actionName="Sign In to Register Zone"
+          />
+        )}
 
         {/* Step Indicator Bar */}
         <div className="flex items-center justify-between bg-surface border border-borderDark p-4 rounded-2xl">

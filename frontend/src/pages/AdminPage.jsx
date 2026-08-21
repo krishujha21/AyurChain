@@ -1,9 +1,12 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { ShieldCheck, CheckCircle2, XCircle, AlertTriangle, FileSpreadsheet, ExternalLink } from 'lucide-react';
+import { FeatureLockBanner } from '../components/FeatureLockBanner';
+import { useNavigate } from 'react-router-dom';
+import { ShieldCheck, AlertTriangle, FileSpreadsheet, Lock, CheckCircle2, UserCheck } from 'lucide-react';
 
 export const AdminPage = () => {
-  const { farmers, updateFarmerStatus, batches, showToast } = useApp();
+  const { farmers, updateFarmerStatus, batches, showToast, isAuthenticated, user, role } = useApp();
+  const navigate = useNavigate();
   const batchList = Object.values(batches);
 
   const handleExportReport = () => {
@@ -17,15 +20,43 @@ export const AdminPage = () => {
     showToast('Report Exported!', 'Downloaded complete compliance audit log as JSON', 'success');
   };
 
+  const handleAction = (actionFn, ...args) => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+    actionFn(...args);
+  };
+
   return (
     <div className="min-h-screen bg-bgDeep text-textPrimary py-10 px-4 md:px-8">
       <div className="max-w-6xl mx-auto space-y-8">
         
+        {/* Unauthenticated Preview Banner */}
+        {!isAuthenticated && (
+          <FeatureLockBanner
+            title="Government Regulatory Oversight Node (Preview Mode)"
+            description="You are currently previewing regulatory oversight logs and compliance audit tools. AYUSH ministry officers and state auditors must sign in to formally issue license approvals or revoke flagged batches."
+            actionName="Sign In as AYUSH Officer"
+          />
+        )}
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-surface border border-borderDark p-6 rounded-2xl shadow-xl">
           <div>
-            <span className="text-xs uppercase font-bold text-accentGold tracking-wider">Government Regulatory Node</span>
-            <h1 className="text-2xl md:text-3xl font-bold font-display text-textPrimary mt-0.5">AYUSH Ministry Oversight Portal</h1>
+            <div className="flex items-center gap-2">
+              <span className="text-xs uppercase font-bold text-accentGold tracking-wider">Government Regulatory Node</span>
+              {isAuthenticated ? (
+                <span className="text-[10px] font-mono bg-primaryGreen/10 text-primaryGreen border border-primaryGreen/30 px-2 py-0.5 rounded-full font-bold">
+                  ● Verified Officer: {user?.name} ({role})
+                </span>
+              ) : (
+                <span className="text-[10px] font-mono bg-accentGold/10 text-accentGold border border-accentGold/30 px-2 py-0.5 rounded-full flex items-center gap-1">
+                  <Lock size={10} /> Public Preview
+                </span>
+              )}
+            </div>
+            <h1 className="text-2xl md:text-3xl font-bold font-display text-textPrimary mt-1">AYUSH Ministry Oversight Portal</h1>
             <p className="text-xs text-textMuted mt-1">Approve registrations, audit supply chain integrity, and handle fraud flags.</p>
           </div>
 
@@ -59,40 +90,43 @@ export const AdminPage = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-borderDark/40">
-                {farmers.map(f => (
-                  <tr key={f.id} className="hover:bg-bgDeep/40 transition-colors">
-                    <td className="p-3 font-mono font-bold text-accentGold">{f.id}</td>
-                    <td className="p-3 font-semibold text-textPrimary">{f.name}</td>
-                    <td className="p-3 text-textMuted">{f.state}, {f.district}</td>
-                    <td className="p-3 font-medium text-primaryGreen">{f.herb}</td>
-                    <td className="p-3 font-mono text-textMuted">{f.wallet}</td>
-                    <td className="p-3">
-                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${
-                        f.status === 'Approved' ? 'bg-primaryGreen/10 text-primaryGreen border border-primaryGreen/30' : 'bg-accentGold/10 text-accentGold border border-accentGold/30'
-                      }`}>
-                        {f.status}
-                      </span>
-                    </td>
-                    <td className="p-3 text-right space-x-2">
-                      {f.status !== 'Approved' && (
-                        <button
-                          onClick={() => updateFarmerStatus(f.id, 'Approved')}
-                          className="bg-primaryGreen/10 text-primaryGreen hover:bg-primaryGreen/20 px-2.5 py-1 rounded-md text-[11px] font-bold border border-primaryGreen/30 transition-colors"
-                        >
-                          Approve
-                        </button>
-                      )}
-                      {f.status !== 'Rejected' && (
-                        <button
-                          onClick={() => updateFarmerStatus(f.id, 'Rejected')}
-                          className="bg-errorRed/10 text-errorRed hover:bg-errorRed/20 px-2.5 py-1 rounded-md text-[11px] font-bold border border-errorRed/30 transition-colors"
-                        >
-                          Reject
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                {farmers.map(f => {
+                  const id = f.farmerId || f.id;
+                  return (
+                    <tr key={id} className="hover:bg-bgDeep/40 transition-colors">
+                      <td className="p-3 font-mono font-bold text-accentGold">{id}</td>
+                      <td className="p-3 font-semibold text-textPrimary">{f.name}</td>
+                      <td className="p-3 text-textMuted">{f.state}, {f.district}</td>
+                      <td className="p-3 font-medium text-primaryGreen">{f.herb}</td>
+                      <td className="p-3 font-mono text-textMuted">{f.wallet}</td>
+                      <td className="p-3">
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${
+                          f.status === 'Approved' ? 'bg-primaryGreen/10 text-primaryGreen border border-primaryGreen/30' : 'bg-accentGold/10 text-accentGold border border-accentGold/30'
+                        }`}>
+                          {f.status}
+                        </span>
+                      </td>
+                      <td className="p-3 text-right space-x-2">
+                        {f.status !== 'Approved' && (
+                          <button
+                            onClick={() => handleAction(updateFarmerStatus, id, 'Approved')}
+                            className="bg-primaryGreen/10 text-primaryGreen hover:bg-primaryGreen/20 px-2.5 py-1 rounded-md text-[11px] font-bold border border-primaryGreen/30 transition-colors"
+                          >
+                            {isAuthenticated ? 'Approve' : 'Sign in to Approve'}
+                          </button>
+                        )}
+                        {f.status !== 'Rejected' && (
+                          <button
+                            onClick={() => handleAction(updateFarmerStatus, id, 'Rejected')}
+                            className="bg-errorRed/10 text-errorRed hover:bg-errorRed/20 px-2.5 py-1 rounded-md text-[11px] font-bold border border-errorRed/30 transition-colors"
+                          >
+                            {isAuthenticated ? 'Reject' : 'Sign in to Reject'}
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -119,10 +153,10 @@ export const AdminPage = () => {
 
                 <div className="flex gap-2">
                   <button
-                    onClick={() => showToast('Batch Revoked!', `Batch ${b.batchId} blacklisted on smart contract`, 'error')}
+                    onClick={() => handleAction(showToast, 'Batch Revoked!', `Batch ${b.batchId} blacklisted on smart contract`, 'error')}
                     className="bg-errorRed text-bgDeep font-bold text-xs px-3 py-1.5 rounded-lg hover:opacity-90 transition-opacity"
                   >
-                    Blacklist Batch
+                    {isAuthenticated ? 'Blacklist Batch' : 'Sign in to Blacklist'}
                   </button>
                 </div>
               </div>

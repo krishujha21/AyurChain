@@ -3,11 +3,12 @@ import { useApp } from '../context/AppContext';
 import { HerbAutocomplete } from '../components/HerbAutocomplete';
 import { IPFSUploader } from '../components/IPFSUploader';
 import { GeoMap } from '../components/GeoMap';
-import { useNavigate } from 'react-router-dom';
-import { QrCode, MapPin, Wifi, WifiOff, Upload, ArrowRight, ShieldCheck } from 'lucide-react';
+import { FeatureLockBanner } from '../components/FeatureLockBanner';
+import { useNavigate, Link } from 'react-router-dom';
+import { QrCode, MapPin, Wifi, WifiOff, ShieldCheck, Lock, LogIn } from 'lucide-react';
 
 export const ScanPage = () => {
-  const { addBatch, saveOfflineBatch, offlineQueue, syncOfflineBatches } = useApp();
+  const { addBatch, saveOfflineBatch, offlineQueue, syncOfflineBatches, isAuthenticated, user } = useApp();
   const navigate = useNavigate();
 
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -15,7 +16,7 @@ export const ScanPage = () => {
   const [weight, setWeight] = useState('150 kg');
   const [method, setMethod] = useState('Wild Harvested');
   const [gps, setGps] = useState([21.1458, 79.0882]);
-  const [locationName, setLocationName] = useState('Nagpur Forest Range 4B');
+  const [locationName] = useState('Nagpur Forest Range 4B');
   const [ipfsHash, setIpfsHash] = useState('');
   const [cameraActive, setCameraActive] = useState(false);
 
@@ -42,6 +43,11 @@ export const ScanPage = () => {
 
   const handleSubmitBatch = (e) => {
     e.preventDefault();
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+
     const batchId = `BATCH-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
 
     const newBatch = {
@@ -58,8 +64,8 @@ export const ScanPage = () => {
         {
           stage: 'Collection',
           icon: 'Leaf',
-          actor: 'Logged Collector',
-          wallet: '0x71C...39A2',
+          actor: user?.name || 'Logged Collector',
+          wallet: user?.walletAddress || '0x71C...39A2',
           location: locationName,
           gps: gps,
           timestamp: new Date().toLocaleString(),
@@ -83,6 +89,15 @@ export const ScanPage = () => {
     <div className="min-h-screen bg-bgDeep text-textPrimary py-10 px-4">
       <div className="max-w-3xl mx-auto space-y-6">
         
+        {/* Unauthenticated Preview Banner */}
+        {!isAuthenticated && (
+          <FeatureLockBanner
+            title="Mobile Batch Logging Terminal (Preview Mode)"
+            description="You are currently previewing the mobile harvesting registration terminal with live GPS geolocation auto-capture. Sign in to officially log and sign new botanical batches on the blockchain."
+            actionName="Sign In to Log Batches"
+          />
+        )}
+
         {/* Network Connectivity Status Bar */}
         <div className={`p-4 rounded-2xl border flex items-center justify-between shadow-lg ${
           isOnline ? 'bg-primaryGreen/10 border-primaryGreen/30 text-primaryGreen' : 'bg-accentGold/10 border-accentGold/40 text-accentGold'
@@ -181,13 +196,23 @@ export const ScanPage = () => {
 
             <IPFSUploader onUploadComplete={(hash) => setIpfsHash(hash)} label="Upload Harvest Photo / Field Receipt" />
 
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-primaryGreen to-emerald-600 hover:opacity-90 text-bgDeep font-bold text-sm py-3.5 rounded-xl shadow-xl transition-all flex items-center justify-center gap-2"
-            >
-              <ShieldCheck size={18} />
-              <span>{isOnline ? 'Broadcast Batch to Ethereum Smart Contract' : 'Store Batch Local Queue (Sync Later)'}</span>
-            </button>
+            {isAuthenticated ? (
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-primaryGreen to-emerald-600 hover:opacity-90 text-bgDeep font-bold text-sm py-3.5 rounded-xl shadow-xl transition-all flex items-center justify-center gap-2"
+              >
+                <ShieldCheck size={18} />
+                <span>{isOnline ? 'Broadcast Batch to Ethereum Smart Contract' : 'Store Batch Local Queue (Sync Later)'}</span>
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                className="w-full bg-surface border border-accentGold hover:bg-bgDeep text-accentGold font-bold text-sm py-3.5 rounded-xl shadow-xl transition-all flex items-center justify-center gap-2"
+              >
+                <Lock size={18} />
+                <span>Sign In to Broadcast Batches on Ethereum</span>
+              </Link>
+            )}
           </form>
 
         </div>

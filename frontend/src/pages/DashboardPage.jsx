@@ -4,7 +4,8 @@ import { GeoMap } from '../components/GeoMap';
 import { IPFSUploader } from '../components/IPFSUploader';
 import { HerbAutocomplete } from '../components/HerbAutocomplete';
 import { QRGenerator } from '../components/QRGenerator';
-import { Link } from 'react-router-dom';
+import { FeatureLockBanner } from '../components/FeatureLockBanner';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   PlusCircle,
   FlaskConical,
@@ -17,12 +18,15 @@ import {
   CheckCircle,
   Clock,
   ShieldCheck,
-  Search
+  Search,
+  Lock,
+  Sparkles
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
 export const DashboardPage = () => {
-  const { role, batches, addBatch, farmers, updateFarmerStatus, showToast } = useApp();
+  const { role, batches, addBatch, farmers, updateFarmerStatus, showToast, isAuthenticated, user } = useApp();
+  const navigate = useNavigate();
   const [showLogModal, setShowLogModal] = useState(false);
   const [showLabModal, setShowLabModal] = useState(false);
   const [showMfgModal, setShowMfgModal] = useState(false);
@@ -176,46 +180,66 @@ export const DashboardPage = () => {
     <div className="min-h-screen bg-bgDeep text-textPrimary pb-20 pt-6 px-4 md:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
         
+        {/* Feature Lock Banner if Unauthenticated */}
+        {!isAuthenticated && (
+          <FeatureLockBanner 
+            title="Interactive Operations Console (Preview Mode)"
+            description="You are exploring the operations dashboard as a guest. All supply chain charts, geographic maps, and batch ledgers are previewable in real time. Sign in to log collections, sign lab quality results, or mint new formulation batches."
+            actionName="Sign In to Perform Operations"
+          />
+        )}
+
         {/* Header Title with Active Role */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-surface border border-borderDark p-6 rounded-2xl shadow-xl">
           <div>
-            <span className="text-xs uppercase font-bold text-primaryGreen tracking-wider">AyurChain Operations Control</span>
-            <h1 className="text-2xl md:text-3xl font-bold font-display text-textPrimary mt-0.5">
+            <div className="flex items-center gap-2">
+              <span className="text-xs uppercase font-bold text-primaryGreen tracking-wider">AyurChain Operations Control</span>
+              {isAuthenticated ? (
+                <span className="text-[10px] font-mono bg-primaryGreen/10 text-primaryGreen border border-primaryGreen/30 px-2 py-0.5 rounded-full font-bold">
+                  ● Authenticated: {user?.name || role}
+                </span>
+              ) : (
+                <span className="text-[10px] font-mono bg-accentGold/10 text-accentGold border border-accentGold/30 px-2 py-0.5 rounded-full flex items-center gap-1">
+                  <Lock size={10} /> Public Preview
+                </span>
+              )}
+            </div>
+            <h1 className="text-2xl md:text-3xl font-bold font-display text-textPrimary mt-1">
               {role} Portal Overview
             </h1>
             <p className="text-xs text-textMuted mt-1">
-              Logged in view. Immutable ledger synced with Ethereum node.
+              {isAuthenticated ? 'Full Operations Access. Actions write immutably to Ethereum & MongoDB.' : 'Preview demonstration view. Sign in to submit state changes.'}
             </p>
           </div>
 
           <div className="flex items-center gap-3">
             {role === 'Farmer' && (
               <button
-                onClick={() => setShowLogModal(true)}
+                onClick={() => isAuthenticated ? setShowLogModal(true) : navigate('/login')}
                 className="flex items-center gap-2 bg-gradient-to-r from-primaryGreen to-emerald-600 hover:opacity-90 text-bgDeep font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg transition-all"
               >
-                <PlusCircle size={16} />
-                Log New Collection
+                {isAuthenticated ? <PlusCircle size={16} /> : <Lock size={16} />}
+                {isAuthenticated ? 'Log New Collection' : 'Sign In to Log'}
               </button>
             )}
 
             {role === 'Lab' && (
               <button
-                onClick={() => setShowLabModal(true)}
+                onClick={() => isAuthenticated ? setShowLabModal(true) : navigate('/login')}
                 className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:opacity-90 text-bgDeep font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg transition-all"
               >
-                <FlaskConical size={16} />
-                Upload Lab Test
+                {isAuthenticated ? <FlaskConical size={16} /> : <Lock size={16} />}
+                {isAuthenticated ? 'Upload Lab Test' : 'Sign In to Upload'}
               </button>
             )}
 
             {role === 'Manufacturer' && (
               <button
-                onClick={() => setShowMfgModal(true)}
+                onClick={() => isAuthenticated ? setShowMfgModal(true) : navigate('/login')}
                 className="flex items-center gap-2 bg-gradient-to-r from-accentGold to-amber-600 hover:opacity-90 text-bgDeep font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg transition-all"
               >
-                <Boxes size={16} />
-                Create Formulation
+                {isAuthenticated ? <Boxes size={16} /> : <Lock size={16} />}
+                {isAuthenticated ? 'Create Formulation' : 'Sign In to Formulate'}
               </button>
             )}
           </div>
