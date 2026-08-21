@@ -1,64 +1,102 @@
-# AGENTS.md — AyurChain AI Agent Guidelines & System Protocols
+# 🛡️ AGENTS.md — AyurChain AI Agent Guidelines, Coding Standards & Boundaries
 
-> **IMPORTANT FOR ALL AI AGENTS**: Any AI assistant (Gemini, Claude, GPT, Cursor, etc.) modifying or extending this codebase **MUST** strictly adhere to the rules and architectural guidelines defined in this document.
+> **ATTENTION AI ASSISTANTS (Gemini, Claude, GPT, Cursor, Copilot, etc.)**: 
+> You are working on **AyurChain**, a Web3 + IoT Ayurvedic Botanical Traceability Platform.
+> Before making ANY changes to this repository, read and strictly adhere to these instructions.
 
 ---
 
-## 🚀 1. Dual Environment Standard (Localhost & Production)
+## ⛔ 1. HARD LIMITATIONS & BOUNDARIES (What AI Agents MUST NEVER Do)
 
-### Frontend (Vite + React)
-- **NEVER** hardcode backend URLs (like `http://localhost:5000` or `https://ayurchain-5nx5.onrender.com`) directly inside components or API calls.
-- **ALWAYS** import `API_BASE_URL` from `@/config/api.js` (or relative `../config/api.js`).
-- Environment fallback logic:
-  - Localhost (`localhost`, `127.0.0.1`): `http://localhost:5000`
-  - Production (Vercel): `import.meta.env.VITE_API_BASE_URL` or Render production URL.
+1. **NEVER STREAK OR DELETE EXISTING FEATURES**:
+   - Do NOT replace real components or features with placeholder text like `// TODO: Implement later` or `/* rest of code unchanged */`.
+   - Do NOT delete mock fallback data (`mockData.js`). The app must work 100% offline or when backend is down.
 
-### Backend (Node.js + Express + Mongoose)
-- CORS must support both production and local origins:
-  ```js
-  const allowedOrigins = [
-    process.env.CORS_ORIGIN || 'https://ayur-chain-three.vercel.app',
-    'http://localhost:5173',
-    'http://localhost:4173',
-    'http://localhost:3000'
-  ];
+2. **NEVER HARDCODE BACKEND URLS**:
+   - **WRONG**: `fetch('http://localhost:5000/api/batches')` or `fetch('https://ayurchain-5nx5.onrender.com/api/batches')`
+   - **RIGHT**: Import `API_BASE_URL` from `@/config/api.js` (or `../config/api.js`) and fetch using `${API_BASE_URL}/api/batches`.
+
+3. **NEVER BREAK THE TAILWIND & AYURVEDIC THEME**:
+   - Do NOT introduce raw CSS files or plain basic Tailwind colors like `bg-blue-500` or `bg-white` for primary layouts.
+   - Always use defined color tokens: `bg-bgDeep` (`#030712`), `bg-surface` (`#0b1329`), `text-primaryGreen` (`#10b981`), `border-borderDark` (`#1f2937`), and glassmorphism styling (`backdrop-blur-md`).
+
+4. **NEVER BREAK EXISTING API & ROUTE CONTRACTS**:
+   - Frontend Routes MUST stay preserved: `/`, `/dashboard`, `/trace/:batchId`, `/register`, `/scan`, `/admin`.
+   - Backend APIs MUST return `{ success: true, data: ... }` on success or `{ success: false, error: ... }` on failure with status codes (200, 201, 400, 404, 500).
+
+5. **NEVER COMMIT SECRETS OR `.env` FILES**:
+   - `.env` containing real DB passwords or private keys MUST NEVER be committed to Git. Only update `.env.example`.
+
+---
+
+## 🎨 2. CODEWRITING INSTRUCTIONS (How AI Agents MUST Write Code)
+
+### A. Frontend (React 18 + Vite + Tailwind)
+- **Component Pattern**: Use functional components with clean hooks. Always handle loading and error states gracefully.
+- **State & Context**: Global state lives in `src/context/AppContext.jsx`. When adding new global state, expose clean action methods.
+- **API Fetching Pattern**:
+  ```javascript
+  import API_BASE_URL from '../config/api';
+
+  async function fetchBatches() {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/batches`);
+      const json = await res.json();
+      if (json.success) return json.data;
+      throw new Error(json.error);
+    } catch (err) {
+      console.warn("Backend unavailable, using fallback:", err.message);
+      // Fallback gracefully to localStorage or mockData!
+      return getFallbackBatches();
+    }
+  }
   ```
-- Port handling: `const PORT = process.env.PORT || 5000;` (Render automatically assigns `process.env.PORT`).
+
+### B. Backend (Node.js + Express + Mongoose)
+- **Modular Route Structure**: Add routes inside `server.js` (or future `routes/` directory).
+- **Mongoose Schema Standard**: Always define proper field types and default values (e.g. `isSuspicious: { type: Boolean, default: false }`).
+- **Always Include Root & Health Routes**: Keep `GET /` and `GET /api/health` intact so Render health checks never fail.
 
 ---
 
-## 🌿 2. Codebase Architecture & Design Rules
+## 📁 3. Directory Structure Quick Reference
 
-1. **Design Aesthetics**:
-   - Maintain the premium Ayurvedic theme: Deep emerald greens (`#064e3b`, `#10b981`), dark slate/surface backgrounds, sleek glassmorphism, and gold accent badges.
-   - Do **NOT** introduce plain basic colors or strip tailwind styling.
-
-2. **Database & Data Fallback Policy**:
-   - All backend API endpoints interacting with MongoDB **MUST** include proper `try/catch` error handling and return clean JSON `{ success: boolean, data?: any, error?: string }`.
-   - Frontend components using backend APIs **MUST** gracefully fallback to `localStorage` or `mockData` if the backend is unreachable or returning errors.
-
-3. **Routing Integrity**:
-   - Keep `/` root route active in `server.js` for health checks (`GET /` and `GET /api/health`).
-   - Frontend routing must preserve all 6 primary views:
-     - `/` (Landing Page)
-     - `/dashboard` (Role-based Dashboard)
-     - `/trace/:batchId` (Botanical Timeline)
-     - `/register` (Farmer/Herb Registration)
-     - `/scan` (QR/NFC Verifier)
-     - `/admin` (Regulator Fraud Panel)
-
----
-
-## 🛠️ 3. Development Commands
-
-| Command | Location | Description |
-| :--- | :--- | :--- |
-| `npm run dev` | `./frontend` | Starts Vite Dev Server (`http://localhost:5173`) |
-| `npm run dev` / `npm start` | `./backend` | Starts Backend Express Server (`http://localhost:5000`) |
+```text
+sihp1/
+├── AGENTS.md                  <-- You are here (AI Instructions)
+├── backend/
+│   ├── server.js              <-- Main Express App & Mongoose Models
+│   ├── .env.example           <-- Backend Env Template
+│   └── package.json
+└── frontend/
+    ├── src/
+    │   ├── config/api.js      <-- Centralized Localhost/Prod Backend URL Switcher
+    │   ├── context/AppContext.jsx <-- Global React App State
+    │   ├── components/        <-- UI Components (Navbar, Cards, Scanners, etc.)
+    │   ├── pages/             <-- Primary App Views (Landing, Dashboard, Trace, etc.)
+    │   └── data/mockData.js   <-- Offline & Demo Fallback Data
+    └── package.json
+```
 
 ---
 
-## 🔒 4. Security & Environment Variable Policy
+## 🚀 4. How to Run Locally
 
-- **NEVER** commit `.env` files containing real secrets (passwords, private keys) to Git.
-- Always update `.env.example` when introducing a new environment variable.
+### Frontend (`./frontend`):
+```bash
+npm install
+npm run dev
+# Running on http://localhost:5173
+```
+
+### Backend (`./backend`):
+```bash
+npm install
+npm run dev # or npm start
+# Running on http://localhost:5000
+```
+
+---
+
+## 💡 5. Summary Rule for AI Agents
+**"Build for production, protect offline fallback, write self-documenting clean code, and never strip existing UI aesthetics."**
