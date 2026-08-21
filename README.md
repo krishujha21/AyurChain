@@ -1,12 +1,14 @@
 # 🌿 AyurChain — Blockchain Botanical Traceability System
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
-[![React](https://img.shields.io/badge/Frontend-React_18_%2B_Vite-61DAFB?logo=react)](https://reactjs.org/)
+[![React](https://img.shields.io/badge/Frontend-React_19_%2B_Vite-61DAFB?logo=react)](https://react.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Styling-Tailwind_CSS-38BDF8?logo=tailwindcss)](https://tailwindcss.com/)
-[![Web3](https://img.shields.io/badge/Blockchain-Ethers.js_%2B_IPFS-3C3C3D?logo=ethereum)](https://ethers.io/)
+[![Web3](https://img.shields.io/badge/Blockchain-Ethers.js_%2B_IPFS-3C3C3D?logo=ethereum)](https://ethers.org/)
 [![Express](https://img.shields.io/badge/Backend-Node.js_%2B_Express-000000?logo=express)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/Database-MongoDB_Atlas-47A248?logo=mongodb)](https://www.mongodb.com/)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-black?logo=vercel)](https://ayur-chain-three.vercel.app/)
 
-> **AyurChain** is an end-to-end, immutable blockchain supply chain transparency platform designed for Ayurvedic herbs and botanical formulations. It tracks medicinal herbs from wild forest harvesting and organic cultivation through processing, lab testing, manufacturing, packaging, and retail distribution.
+> **AyurChain** is an end-to-end, immutable Web3 supply chain transparency platform designed for Ayurvedic herbs and botanical formulations. It tracks medicinal herbs from wild forest harvesting and organic cultivation through processing, lab testing, manufacturing, packaging, and retail distribution.
 
 ---
 
@@ -16,6 +18,7 @@
 - [🏗 Architecture & Workflow](#-architecture--workflow)
 - [⚡ Tech Stack](#-tech-stack)
 - [🚀 Quick Start & Installation](#-quick-start--installation)
+- [🌐 Deployment & Live Links](#-deployment--live-links)
 - [📄 License](#-license)
 
 ---
@@ -28,6 +31,7 @@
 - **📱 Consumer QR Code Verification**: Instantly scan product QR codes to view full lineage, lab test results, carbon footprint metrics, and authentic harvest history.
 - **🛡 Regulatory & Admin Dashboard**: Dedicated portals for quality control inspectors, lab verifiers, state forest departments, and AYUSH compliance regulators.
 - **🦊 Multi-Wallet Support**: Seamless Web3 wallet connectivity via MetaMask, WalletConnect, and Coinbase Wallet.
+- **⚡ Dual Environment & Smart Failover**: Production-ready architecture with seamless failover between primary/secondary backends and offline demo fallback (`mockData`).
 
 ---
 
@@ -94,11 +98,13 @@ flowchart LR
 
 | Layer | Technologies Used |
 | :--- | :--- |
-| **Frontend Framework** | React 18, Vite |
+| **Frontend Framework** | React 19, Vite, React Router v7 |
 | **Styling & UI** | Tailwind CSS, Lucide Icons, Framer Motion |
-| **Blockchain & Web3** | Ethers.js, IPFS (Pinata), Web3 Wallet Connectors |
-| **Maps & Visualization** | Leaflet / React-Leaflet, Chart.js / Recharts |
+| **Blockchain & Web3** | Ethers.js v6, IPFS, Web3 Wallet Connectors |
+| **Maps & Data Visualization** | Leaflet, React-Leaflet, Recharts |
 | **Backend API** | Node.js, Express.js |
+| **Database** | MongoDB Atlas / Mongoose |
+| **Deployment** | Vercel (Frontend), Render (Backend API) |
 
 ---
 
@@ -106,7 +112,7 @@ flowchart LR
 
 ### Prerequisites
 - Node.js (v18 or higher recommended)
-- npm or yarn
+- npm, yarn, or pnpm
 
 ### 1. Clone the Repository
 ```bash
@@ -129,6 +135,13 @@ npm install
 npm run dev
 ```
 The backend API server will run at `http://localhost:5000`.
+
+---
+
+## 🌐 Deployment & Live Links
+
+- **Frontend Application (Vercel)**: [https://ayur-chain-three.vercel.app](https://ayur-chain-three.vercel.app)
+- **Backend API (Render)**: [https://ayurchain-5nx5.onrender.com](https://ayurchain-5nx5.onrender.com)
 
 ---
 
